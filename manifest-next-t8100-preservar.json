@@ -1,0 +1,30 @@
+{
+  "name": "SENS NEXT — T8100 Rev.01B",
+  "version": "NEXT-T8100 Rev.01B",
+  "new_install_prompt_erase": true,
+  "builds": [
+    {
+      "chipFamily": "ESP32",
+      "parts": [
+        {
+          "path": "firmware/SENS_NEXT_T8100_REV01B_BOOTLOADER.bin",
+          "offset": 4096
+        },
+        {
+          "path": "firmware/SENS_NEXT_T8100_REV01B_PARTITIONS.bin",
+          "offset": 32768
+        },
+        {
+          "path": "firmware/SENS_NEXT_T8100_REV01B_BOOT_APP0.bin",
+          "offset": 57344
+        },
+        {
+          "path": "firmware/SENS_NEXT_T8100_REV01B_APP.bin",
+          "offset": 65536
+        }
+      ],
+      "improv": true
+    }
+  ],
+  "new_install_improv_wait_time": 0
+}
