@@ -398,7 +398,20 @@ $("conv_model")?.addEventListener("input",refreshCorrectionMenus);
 
 function advForm(){return `tmode=${$("tmode").value};aif=${$("aif").value};adsch=${$("adsch").value};vin0=${$("vin0").value};vin1=${$("vin1").value};sc0=${$("sc0").value};sc1=${$("sc1").value};div=${$("divider").value};divr=${$("divratio").value};mavg=${$("mavg").value};mwin=${$("mwin").value};warm=${$("warm").value};i_dht=${$("i_dht").value};i_ds=${$("i_ds").value};i_t66=${$("i_t66").value};i_b18=${$("i_b18").value};i_be2=${$("i_be2").value};i_be6=${$("i_be6").value};i_b38=${$("i_b38").value};i_bh=${$("i_bh").value};i_ap=${$("i_ap").value};i_th=${$("i_th").value};i_gps=${$("i_gps").value}`}
 function genForm(i){return `en=${$("g"+i+"_en").value};id=${$("g"+i+"_id").value};model=${$("g"+i+"_model").value};mfr=${$("g"+i+"_mfr").value};if=${$("g"+i+"_if").value};qty=${$("g"+i+"_qty").value};unit=${$("g"+i+"_unit").value};gpio=${$("g"+i+"_gpio").value};in0=${$("g"+i+"_in0").value};in1=${$("g"+i+"_in1").value};sc0=${$("g"+i+"_sc0").value};sc1=${$("g"+i+"_sc1").value};baud=${$("g"+i+"_baud").value};slave=${$("g"+i+"_slave").value};reg=${$("g"+i+"_reg").value};factor=${$("g"+i+"_factor").value};ppu=${$("g"+i+"_ppu").value};pwin=${$("g"+i+"_pwin").value};total=${$("g"+i+"_total").value}`}
-function corForm(i){return `en=${$("c"+i+"_en").value};sid=${$("c"+i+"_sid").value};qty=${$("c"+i+"_qty").value};a=${$("c"+i+"_a").value};b=${$("c"+i+"_b").value};cid=${$("c"+i+"_cid").value};ver=${$("c"+i+"_ver").value}`}
+function sensDecimal(v,label){
+  const raw=String(v??"").trim();
+  const normalized=raw.replace(/\s+/g,"").replace(",",".");
+  if(!/^[+-]?(?:\d+(?:\.\d*)?|\.\d+)$/.test(normalized))
+    throw new Error(`${label}: valor numérico inválido "${raw}". Use, por exemplo, -135,33249 ou -135.33249.`);
+  const n=Number(normalized);
+  if(!Number.isFinite(n)) throw new Error(`${label}: valor numérico inválido "${raw}".`);
+  return String(n);
+}
+function corForm(i){
+  const a=sensDecimal($("c"+i+"_a").value,`Correção ${i+1} — Ganho (a)`);
+  const b=sensDecimal($("c"+i+"_b").value,`Correção ${i+1} — Offset (b)`);
+  return `en=${$("c"+i+"_en").value};sid=${$("c"+i+"_sid").value};qty=${$("c"+i+"_qty").value};a=${a};b=${b};cid=${$("c"+i+"_cid").value};ver=${$("c"+i+"_ver").value}`
+}
 function updateCorrectionPreview(i){
   const en=$("c"+i+"_en")?.value==="1", q=$("c"+i+"_qty")?.value.trim()||"y", a=$("c"+i+"_a")?.value||"1", b=$("c"+i+"_b")?.value||"0";
   const e=$("c"+i+"_eq"); if(e)e.textContent=`${en?"CORREÇÃO ATIVA":"CORREÇÃO DESATIVADA"} — ${q} corrigida = ${a} × valor medido ${Number(b)>=0?"+ ":"− "}${Math.abs(Number(b)||0)}`;
