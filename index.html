@@ -47,7 +47,7 @@ details.config-group>summary{font-weight:800;color:#176b3a;cursor:pointer}
 </style>
 </head>
 <body>
-<header><h1>SENS INSTALLER NEXT — AQUISIÇÃO Rev.02A</h1><div>LAB • CONVERSOR ADC-I²C / ADS1115 → grandeza física • LINHAGEM EXPERIMENTAL</div></header>
+<header><h1>SENS INSTALLER NEXT — AQUISIÇÃO Rev.02D</h1><div>LAB • CONVERSOR ADC-I²C / ADS1115 → grandeza física • LINHAGEM EXPERIMENTAL</div></header>
 <main>
 <section class="card" id="preconfigCard">
 <div class="step">ETAPA 1 — CONFIGURAÇÃO DO EQUIPAMENTO</div><h2>Configure o SENS antes de instalar</h2>
@@ -70,9 +70,12 @@ details.config-group>summary{font-weight:800;color:#176b3a;cursor:pointer}
 </div><div class="config-grid" style="margin-top:12px"><label>DS18B20<select id="dsMode"><option value="0">DESATIVADO</option><option value="1">1 sensor</option><option value="2">2 sensores</option><option value="3">AUTO</option></select></label></div>
 <div class="smallnote">Catálogo = conveniência. Instrumentos fora do catálogo entram por INTERFACE / DRIVER ou CONVERSOR.</div></fieldset>
 
-<fieldset class="config-group"><legend>INTERFACE / DRIVER</legend><div class="checkgrid">
-<label class="checkitem"><input type="checkbox" id="s_t6613"> <b>UART — driver T6613</b></label>
-</div><div class="smallnote">T6613 não precisa estar no Catálogo: por UART usa o driver próprio (GPIO16/17, 19200 bps). Outros drivers/protocolos poderão ser acrescentados aqui.</div></fieldset>
+<details class="config-group"><summary>INTERFACE / DRIVER</summary>
+<div style="margin-top:12px">
+  <label class="checkitem"><input type="checkbox" id="s_t6613"> <b>UART — driver T6613</b></label>
+  <div class="smallnote" style="margin-top:8px">Driver T6613: UART2 do ESP32 • RX GPIO16 • TX GPIO17 • 19200 bps. Outros drivers/protocolos poderão ser acrescentados aqui.</div>
+</div>
+</details>
 
 <details class="config-group" open><summary>CONVERSOR — ADC-I²C / ADS1115</summary>
 <label class="checkitem" style="margin-top:12px"><input type="checkbox" id="s_converter"> <b>ATIVAR CONVERSOR ADS1115</b></label>
@@ -396,7 +399,7 @@ $("s_converter")?.addEventListener("change",applyConverterProfile);
 $("s_t6613")?.addEventListener("change",()=>{if($("s_t6613").checked && $("s_converter")?.checked){$("s_converter").checked=false;refreshCorrectionMenus();}});
 $("conv_model")?.addEventListener("input",refreshCorrectionMenus);
 
-function advForm(){return `tmode=${$("tmode").value};aif=${$("aif").value};adsch=${$("adsch").value};vin0=${$("vin0").value};vin1=${$("vin1").value};sc0=${$("sc0").value};sc1=${$("sc1").value};div=${$("divider").value};divr=${$("divratio").value};mavg=${$("mavg").value};mwin=${$("mwin").value};warm=${$("warm").value};i_dht=${$("i_dht").value};i_ds=${$("i_ds").value};i_t66=${$("i_t66").value};i_b18=${$("i_b18").value};i_be2=${$("i_be2").value};i_be6=${$("i_be6").value};i_b38=${$("i_b38").value};i_bh=${$("i_bh").value};i_ap=${$("i_ap").value};i_th=${$("i_th").value};i_gps=${$("i_gps").value}`}
+function advForm(){const tmode=$("s_t6613")?.checked?2:1;return `tmode=${tmode};aif=${$("aif").value};adsch=${$("adsch").value};vin0=${$("vin0").value};vin1=${$("vin1").value};sc0=${$("sc0").value};sc1=${$("sc1").value};div=${$("divider").value};divr=${$("divratio").value};mavg=${$("mavg").value};mwin=${$("mwin").value};warm=${$("warm").value};i_dht=${$("i_dht").value};i_ds=${$("i_ds").value};i_t66=${$("i_t66").value};i_b18=${$("i_b18").value};i_be2=${$("i_be2").value};i_be6=${$("i_be6").value};i_b38=${$("i_b38").value};i_bh=${$("i_bh").value};i_ap=${$("i_ap").value};i_th=${$("i_th").value};i_gps=${$("i_gps").value}`}
 function genForm(i){return `en=${$("g"+i+"_en").value};id=${$("g"+i+"_id").value};model=${$("g"+i+"_model").value};mfr=${$("g"+i+"_mfr").value};if=${$("g"+i+"_if").value};qty=${$("g"+i+"_qty").value};unit=${$("g"+i+"_unit").value};gpio=${$("g"+i+"_gpio").value};in0=${$("g"+i+"_in0").value};in1=${$("g"+i+"_in1").value};sc0=${$("g"+i+"_sc0").value};sc1=${$("g"+i+"_sc1").value};baud=${$("g"+i+"_baud").value};slave=${$("g"+i+"_slave").value};reg=${$("g"+i+"_reg").value};factor=${$("g"+i+"_factor").value};ppu=${$("g"+i+"_ppu").value};pwin=${$("g"+i+"_pwin").value};total=${$("g"+i+"_total").value}`}
 function sensDecimal(v,label){
   const raw=String(v??"").trim();
