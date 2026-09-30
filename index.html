@@ -47,7 +47,7 @@ details.config-group>summary{font-weight:800;color:#176b3a;cursor:pointer}
 </style>
 </head>
 <body>
-<header><h1>SENS INSTALLER NEXT — UNIVERSAL Rev.03K — LAB</h1><div>LAB • INTERFACES / DRIVERS • CONVERSORES • LINHAGEM EXPERIMENTAL</div></header>
+<header><h1>SENS INSTALLER NEXT — UNIVERSAL Rev.03L — CATÁLOGO + PULSO</h1><div>LAB • INTERFACES / DRIVERS • CONVERSORES • LINHAGEM EXPERIMENTAL</div></header>
 <main>
 <section class="card" id="preconfigCard">
 <div class="step">ETAPA 1 — CONFIGURAÇÃO DO EQUIPAMENTO</div><h2>Configure o SENS antes de instalar</h2>
@@ -68,6 +68,16 @@ details.config-group>summary{font-weight:800;color:#176b3a;cursor:pointer}
 <label class="checkitem"><input type="checkbox" id="s_bh1750"> BH1750</label><label class="checkitem"><input type="checkbox" id="s_apds"> APDS9960</label>
 <label class="checkitem"><input type="checkbox" id="s_thermok"> Termopar K</label><label class="checkitem"><input type="checkbox" id="s_gps"> GPS</label>
 </div><div class="config-grid" style="margin-top:12px"><label>DS18B20<select id="dsMode"><option value="0">DESATIVADO</option><option value="1">1 sensor</option><option value="2">2 sensores</option><option value="3">AUTO</option></select></label></div>
+<div class="sensorbox" style="margin-top:12px">
+  <label class="checkitem"><input type="checkbox" id="s_yfs201"> <b>YF-S201 — Vazão</b></label>
+  <div class="config-grid" id="yf_cfg" style="margin-top:10px">
+    <label>GPIO de pulsos<input id="yf_gpio" type="number" min="0" max="39" value="23"></label>
+    <label>Pulsos por litro<input id="yf_ppu" type="number" step="any" value="450"></label>
+    <label>Janela de leitura (ms)<input id="yf_pwin" type="number" min="100" value="1000"></label>
+    <label>Saída científica<input value="Vazão — L/min" disabled></label>
+  </div>
+  <div class="smallnote">Perfil de catálogo: driver PULSO/FREQUÊNCIA. GPIO23 é apenas o padrão sugerido e pode ser alterado pelo pesquisador.</div>
+</div>
 <div class="smallnote">Catálogo = conveniência. Instrumentos fora do catálogo entram por INTERFACE / DRIVER ou CONVERSOR.</div></fieldset>
 
 <details class="config-group"><summary>INTERFACES / DRIVERS</summary>
@@ -109,7 +119,7 @@ details.config-group>summary{font-weight:800;color:#176b3a;cursor:pointer}
 <label>Termopar K ms<input id="i_th" value="2000"></label><label>GPS ms<input id="i_gps" value="1000"></label></div></details>
 <details class="config-group"><summary>Mapa de pinos / recursos</summary><div class="pinmap" style="margin-top:12px">
 <div><b>GPIO4</b> DHT22</div><div><b>GPIO13</b> DS18B20</div><div><b>GPIO35</b> T6613 ADC</div><div><b>GPIO16/17</b> T6613 UART</div>
-<div><b>GPIO21/22</b> I²C compartilhado</div><div><b>GPIO18/5/19</b> MAX6675</div><div><b>0x48</b> ADS1115</div><div><b>0x23</b> BH1750</div><div><b>0x39</b> APDS9960</div></div>
+<div><b>GPIO21/22</b> I²C compartilhado</div><div><b>GPIO18/5/19</b> MAX6675</div><div><b id="yfPinMap">GPIO23</b> YF-S201 (quando ativo)</div><div><b>0x48</b> ADS1115</div><div><b>0x23</b> BH1750</div><div><b>0x39</b> APDS9960</div></div>
 <div id="pinWarnings" class="warn">Mapa ativo. Conflitos de GPIO dos genéricos serão sinalizados.</div></details>
 <details class="config-group" style="display:none"><summary>Compatibilidade interna — slots genéricos</summary><p class="smallnote">Quando o slot está DESATIVADO, o Installer confirma somente o estado OFF. Metadados antigos/defaults na NVS não geram falso erro.</p><div id="genericSlots"></div></details>
 <details class="config-group"><summary>Correção metrológica — y = a × x + b</summary><p class="smallnote">2 correções metrológicas disponíveis. Escolha o sensor/canal habilitado e depois a grandeza. Vale para sensores nativos e genéricos. Linhas OFF e vazias são ignoradas.</p><div id="correctionSlots"></div></details>
@@ -120,8 +130,8 @@ details.config-group>summary{font-weight:800;color:#176b3a;cursor:pointer}
 <div class="step">ETAPA 2 — INSTALAÇÃO</div><h2>Instale o SENS</h2>
 <p class="note">O Wi‑Fi automático do ESP Web Tools está desativado nesta versão. Terminada a instalação, use a Etapa 3: ela grava automaticamente o Nome + Serial já salvos e, na mesma conexão USB, segue para a rede.</p>
 <div class="actions">
-<esp-web-install-button manifest="manifest-next-rev03j-do-zero.json"><button slot="activate">INSTALAR SENS DO ZERO</button></esp-web-install-button>
-<esp-web-install-button manifest="manifest-next-rev03j-preservar.json"><button slot="activate">ATUALIZAR — PRESERVAR DADOS</button></esp-web-install-button>
+<esp-web-install-button manifest="manifest-next-rev03k-do-zero.json"><button slot="activate">INSTALAR SENS DO ZERO</button></esp-web-install-button>
+<esp-web-install-button manifest="manifest-next-rev03k-preservar.json"><button slot="activate">ATUALIZAR — PRESERVAR DADOS</button></esp-web-install-button>
 <div style="margin-top:8px;font-size:.88rem;line-height:1.35">
   <strong>ATUALIZAR — PRESERVAR DADOS:</strong> mantém NVS/identidade do equipamento
   (Epoch, próximo Seq e configurações). Se o gravador apresentar uma opção de apagar
@@ -154,7 +164,7 @@ details.config-group>summary{font-weight:800;color:#176b3a;cursor:pointer}
 <section class="card" id="configCard">
 <div class="step">CONFIGURAÇÃO GRAVADA NO EQUIPAMENTO</div><h2>Leitura da configuração runtime</h2>
 <p class="note">Espelho da configuração enviada e confirmada pela transação atômica da Rev.15D2.3. O COMMIT valida todos os blocos e gera um snapshot persistente relido da NVS. A senha Wi‑Fi nunca é exibida.</p>
-<table class="config-table"><tr><th>Firmware</th><td>2.2.1-RC5B8 Rev.15D2.3 URL PLATFORM NVS</td></tr><tr><th>Nome</th><td id="cfgName">Aguardando</td></tr><tr><th>Serial / ID SENS</th><td id="cfgSerial">Aguardando</td></tr><tr><th>Projeto</th><td id="cfgProject">Aguardando</td></tr><tr><th>Local</th><td id="cfgLocation">Aguardando</td></tr><tr><th>URL da Platform</th><td id="cfgPlatformUrl">Aguardando</td></tr><tr><th>Papel</th><td id="cfgRole">Aguardando</td></tr><tr><th>Intervalo</th><td id="cfgSend">Aguardando</td></tr><tr><th>Sync Platform</th><td id="cfgSync">Aguardando</td></tr><tr><th>Sensores</th><td id="cfgSensors">Aguardando leitura</td></tr><tr><th>Avançado</th><td id="cfgAdvanced">Aguardando leitura</td></tr><tr><th>Genérico 1</th><td id="cfgGeneric1">Aguardando leitura</td></tr><tr><th>Genérico 2</th><td id="cfgGeneric2">Aguardando leitura</td></tr><tr><th>Correção 1</th><td id="cfgCorrection1">Aguardando leitura</td></tr><tr><th>Correção 2</th><td id="cfgCorrection2">Aguardando leitura</td></tr><tr><th>Transação Rev.15D2.3</th><td id="cfgTransaction">Aguardando COMMIT</td></tr><tr><th>Fingerprint</th><td id="cfgFingerprint">—</td></tr><tr><th>Fonte da identidade</th><td id="cfgIdentitySource">Aguardando confirmação</td></tr><tr><th>Wi‑Fi</th><td id="cfgWifi">Não configurado nesta sessão</td></tr><tr><th>Senha Wi‑Fi</th><td><span class="pill">não exibida</span></td></tr></table>
+<table class="config-table"><tr><th>Firmware</th><td>SENS NEXT Universal Rev.03K (fonte catálogo/pulso)</td></tr><tr><th>Nome</th><td id="cfgName">Aguardando</td></tr><tr><th>Serial / ID SENS</th><td id="cfgSerial">Aguardando</td></tr><tr><th>Projeto</th><td id="cfgProject">Aguardando</td></tr><tr><th>Local</th><td id="cfgLocation">Aguardando</td></tr><tr><th>URL da Platform</th><td id="cfgPlatformUrl">Aguardando</td></tr><tr><th>Papel</th><td id="cfgRole">Aguardando</td></tr><tr><th>Intervalo</th><td id="cfgSend">Aguardando</td></tr><tr><th>Sync Platform</th><td id="cfgSync">Aguardando</td></tr><tr><th>Sensores</th><td id="cfgSensors">Aguardando leitura</td></tr><tr><th>Avançado</th><td id="cfgAdvanced">Aguardando leitura</td></tr><tr><th>Genérico 1</th><td id="cfgGeneric1">Aguardando leitura</td></tr><tr><th>Genérico 2</th><td id="cfgGeneric2">Aguardando leitura</td></tr><tr><th>Correção 1</th><td id="cfgCorrection1">Aguardando leitura</td></tr><tr><th>Correção 2</th><td id="cfgCorrection2">Aguardando leitura</td></tr><tr><th>Transação Rev.15D2.3</th><td id="cfgTransaction">Aguardando COMMIT</td></tr><tr><th>Fingerprint</th><td id="cfgFingerprint">—</td></tr><tr><th>Fonte da identidade</th><td id="cfgIdentitySource">Aguardando confirmação</td></tr><tr><th>Wi‑Fi</th><td id="cfgWifi">Não configurado nesta sessão</td></tr><tr><th>Senha Wi‑Fi</th><td><span class="pill">não exibida</span></td></tr></table>
 <div id="cfgPanelStatus" class="status">O painel será atualizado conforme Nome, Serial e Wi‑Fi forem confirmados.</div>
 </section>
 
@@ -443,13 +453,38 @@ function restoreFull(c){
   V("name",c.name||"");V("serial",c.serial||"");V("project",c.project||"");V("location",c.location||"");V("platformUrl",c.platformUrl||"");V("role",c.role||"NORMAL");V("sendSec",c.sendSec||60);$("syncPlatform").checked=c.sync!==false;
   const z=c.sensors||{};if(z.t8100 && z.converter===undefined){z.converter=true;z.convModel=z.convModel||"Telaire T8100";}for(const [id,k] of [["s_dht22","dht22"],["s_t6613","t6613"],["s_converter","converter"],["s_bmp180","bmp180"],["s_bme280","bme280"],["s_bme680","bme680"],["s_bmp388","bmp388"],["s_bh1750","bh1750"],["s_apds","apds"],["s_thermok","thermok"],["s_gps","gps"]])$(id).checked=!!z[k];V("dsMode",z.dsMode||0);V("conv_model",z.convModel||"");
   const a=kvObj(c.advanced||"");for(const [k,id] of Object.entries({tmode:"tmode",aif:"aif",adsch:"adsch",vin0:"vin0",vin1:"vin1",sc0:"sc0",sc1:"sc1",div:"divider",divr:"divratio",mavg:"mavg",mwin:"mwin",warm:"warm",i_dht:"i_dht",i_ds:"i_ds",i_t66:"i_t66",i_b18:"i_b18",i_be2:"i_be2",i_be6:"i_be6",i_b38:"i_b38",i_bh:"i_bh",i_ap:"i_ap",i_th:"i_th",i_gps:"i_gps"}))if(k in a)V(id,a[k]);
-  for(let i=0;i<2;i++){const g=kvObj(c.generics?.[i]||"");for(const k of ["en","id","model","mfr","if","gpio","qty","unit","in0","in1","sc0","sc1","baud","slave","reg","factor","ppu","pwin","total"])if(k in g)V(`g${i}_${k}`,g[k]);const q=kvObj(c.corrections?.[i]||"");for(const k of ["sid","qty","a","b","cid","en","ver"])if(k in q)V(`c${i}_${k}`,q[k]);updateCorrectionPreview(i);}
+  for(let i=0;i<2;i++){const g=kvObj(c.generics?.[i]||"");for(const k of ["en","id","model","mfr","if","gpio","qty","unit","in0","in1","sc0","sc1","baud","slave","reg","factor","ppu","pwin","total"])if(k in g)V(`g${i}_${k}`,g[k]);const q=kvObj(c.corrections?.[i]||"");for(const k of ["sid","qty","a","b","cid","en","ver"])if(k in q)V(`c${i}_${k}`,q[k]);updateCorrectionPreview(i);}syncYFFromSaved(c);
   refreshCorrectionMenus();
 }
 function clearNewConfig(){localStorage.removeItem("sensInstallerNEXTCONVERSORREV02");location.reload();}
 function fmtKv(x,kind){const o=kvObj(x||"");if(kind==="generic")return String(o.en)!=="1"?"DESATIVADO":`${o.id||"—"} • ${o.model||"—"} • ${o.qty||"—"} ${o.unit||""} • GPIO ${o.gpio||"—"} • fator ${o.factor||"—"}`;if(kind==="corr")return String(o.en)!=="1"?"DESATIVADA":`${o.sid||"—"} • ${o.qty||"—"} • y = ${o.a||1} × x + ${o.b||0} • Aferição ${o.cid||"—"}`;return Object.entries(o).map(([k,v])=>`${k}=${v}`).join(" • ")||"—";}
+function applyYFProfile(){
+  const on=$("s_yfs201")?.checked;
+  if(!$("g0_en")) return;
+  if(on){
+    V("g0_en","1");V("g0_id","S_YF201");V("g0_model","YF-S201");V("g0_mfr","Generico");V("g0_if","24");
+    V("g0_gpio",$("yf_gpio").value||"23");V("g0_qty","vazao");V("g0_unit","L/min");
+    V("g0_factor","60");V("g0_ppu",$("yf_ppu").value||"450");V("g0_pwin",$("yf_pwin").value||"1000");V("g0_total","1");
+  } else {
+    const model=$("g0_model")?.value||"";
+    if(model==="YF-S201" || $("g0_id")?.value==="S_YF201") V("g0_en","0");
+  }
+  if($("yfPinMap")) $("yfPinMap").textContent="GPIO"+($("yf_gpio")?.value||"23");
+}
+function syncYFFromSaved(c){
+  const g=kvObj(c?.generics?.[0]||""); const isYF=String(g.en)==="1" && (g.model==="YF-S201" || g.id==="S_YF201");
+  if($("s_yfs201")) $("s_yfs201").checked=isYF;
+  if(isYF){V("yf_gpio",g.gpio||"23");V("yf_ppu",g.ppu||"450");V("yf_pwin",g.pwin||"1000");}
+  if($("yfPinMap")) $("yfPinMap").textContent="GPIO"+($("yf_gpio")?.value||"23");
+}
+$("s_yfs201")?.addEventListener("change",applyYFProfile);
+$("yf_gpio")?.addEventListener("input",applyYFProfile);
+$("yf_ppu")?.addEventListener("input",applyYFProfile);
+$("yf_pwin")?.addEventListener("input",applyYFProfile);
+
 function saveConfig(){
   applyConverterProfile();
+  applyYFProfile();
   const name=$("name").value.trim(),serial=$("serial").value.trim();
   if(!name||!serial){alert("Preencha Nome e Serial.");return false;}
   if(!validSerial(serial)){alert("No Serial use apenas letras, números e hífen.");return false;}
