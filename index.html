@@ -47,7 +47,7 @@ details.config-group>summary{font-weight:800;color:#176b3a;cursor:pointer}
 </style>
 </head>
 <body>
-<header><h1>SENS INSTALLER NEXT — UNIVERSAL Rev.03M — CATÁLOGO T6613 + YF-S201</h1><div>LAB • INTERFACES / DRIVERS • CONVERSORES • LINHAGEM EXPERIMENTAL</div></header>
+<header><h1>SENS INSTALLER NEXT — UNIVERSAL Rev.03O — CATÁLOGO T6613 + YF-S201</h1><div>LAB • INTERFACES / DRIVERS • CONVERSORES • Installer Rev.03O • Firmware Rev.03K</div></header>
 <main>
 <section class="card" id="preconfigCard">
 <div class="step">ETAPA 1 — CONFIGURAÇÃO DO EQUIPAMENTO</div><h2>Configure o SENS antes de instalar</h2>
@@ -760,7 +760,7 @@ function commitSnapshot(frames){
     if(!sec[tag+"_done"])throw new Error("Snapshot NVS incompleto: "+tag+".");
   return sec;
 }
-async function runFullConfigTransactionSerialOnce(c,verifyName,verifySerial,serialTx){
+async function runFullConfigTransactionSerial(c,verifyName,verifySerial,serialTx){
   const token=fullToken();
   const basic=encodeRuntime(c);
   const adv=c.advanced||advForm();
@@ -810,38 +810,6 @@ async function runFullConfigTransactionSerialOnce(c,verifyName,verifySerial,seri
     if(!equivalentConfig(wanted,read)) throw new Error(`${label} divergiu da NVS. ${configDiff(wanted,read)}`);
   }
   return {token,fp:commitOk.fp,basic,adv,g:[g1,g2],corr:[c1,c2],snapshot:sec};
-}
-
-
-// Rev.03N — recuperação segura do transporte ASCII no caminho PRESERVAR.
-// Se um ACK de BEGIN/bloco se perder durante a transição Improv -> ASCII,
-// nenhuma NVS foi persistida ainda. Reabre a MESMA porta e reinicia a
-// transação completa. Timeout de COMMIT NÃO é repetido automaticamente,
-// pois nesse ponto a persistência pode já ter ocorrido.
-async function runFullConfigTransactionSerial(c,verifyName,verifySerial,serialTx){
-  const maxTentativas=3;
-  let ultimoErro=null;
-  for(let tentativa=1; tentativa<=maxTentativas; tentativa++){
-    try{
-      if(tentativa>1){
-        setStatus("cfgstatus",`Recuperação PRESERVAR ${tentativa}/${maxTentativas}: ressincronizando porta serial...`);
-        try{ await serialTx.close(); }catch(_){ }
-        await new Promise(r=>setTimeout(r,1400));
-        await serialTx.open();
-        await new Promise(r=>setTimeout(r,900));
-      }
-      return await runFullConfigTransactionSerialOnce(c,verifyName,verifySerial,serialTx);
-    }catch(e){
-      ultimoErro=e;
-      const msg=e && e.message ? e.message : String(e);
-      const ackPerdido=msg.includes("Tempo esgotado aguardando ACK serial");
-      if(!ackPerdido || tentativa>=maxTentativas) throw e;
-      // BEGIN de uma nova tentativa chama fullConfigStageStart() no firmware,
-      // que descarta o estágio RAM anterior. Até aqui não houve COMMIT/NVS.
-      setStatus("cfgstatus",`ACK serial não chegou (${tentativa}/${maxTentativas}). Recuperando automaticamente sem apagar a NVS...`);
-    }
-  }
-  throw ultimoErro || new Error("Falha de recuperação serial.");
 }
 
 $("apply").onclick=async()=>{

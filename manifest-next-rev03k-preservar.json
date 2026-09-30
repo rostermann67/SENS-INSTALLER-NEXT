@@ -1,7 +1,7 @@
 {
-  "name": "SENS NEXT — UNIVERSAL Rev.03K — Pulso/Catálogo",
+  "name": "SENS NEXT — PRESERVAR — Firmware Rev.03K",
   "version": "NEXT-UNIVERSAL Rev.03K",
-  "new_install_prompt_erase": true,
+  "new_install_prompt_erase": false,
   "builds": [
     {
       "chipFamily": "ESP32",
