@@ -32,6 +32,7 @@ font-family:Consolas,"Courier New",monospace;font-size:.84rem;line-height:1.35;w
 .config-group legend{font-weight:800;color:#176b3a;padding:0 7px}
 .checkgrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px 12px;margin-top:8px}
 .checkitem{display:flex;gap:8px;align-items:center;border:1px solid #e1e7e3;border-radius:8px;padding:8px;background:#fafcfb}
+.catalog-item{min-height:54px;align-items:center}.catalog-text{display:flex;flex:1;min-width:0;flex-direction:column;align-items:flex-end;justify-content:center;line-height:1.08;text-align:right}.catalog-model{font-weight:700;white-space:nowrap}.catalog-qty{font-size:10px;font-weight:600;color:#5f6963;margin-top:4px;white-space:nowrap}
 .smallnote{font-size:.84rem;color:#67716b}
 @media(max-width:760px){.config-grid,.checkgrid{grid-template-columns:1fr}}
 .sensorbox{border:1px solid #dfe7e2;border-radius:10px;padding:12px;margin:10px 0;background:#fcfdfc}
@@ -47,7 +48,7 @@ details.config-group>summary{font-weight:800;color:#176b3a;cursor:pointer}
 </style>
 </head>
 <body>
-<header><h1>SENS INSTALLER NEXT — UNIVERSAL Rev.03O — CATÁLOGO T6613 + YF-S201</h1><div>LAB • INTERFACES / DRIVERS • CONVERSORES • Installer Rev.03O • Firmware Rev.03K</div></header>
+<header><h1>SENS INSTALLER NEXT — UNIVERSAL Rev.03P — CATÁLOGO T6613 + YF-S201</h1><div>LAB • INTERFACES / DRIVERS • CONVERSORES • Installer Rev.03P • Firmware Rev.03K</div></header>
 <main>
 <section class="card" id="preconfigCard">
 <div class="step">ETAPA 1 — CONFIGURAÇÃO DO EQUIPAMENTO</div><h2>Configure o SENS antes de instalar</h2>
@@ -62,20 +63,22 @@ details.config-group>summary{font-weight:800;color:#176b3a;cursor:pointer}
 <label>Intervalo de envio<select id="sendSec"><option value="60">1 minuto</option><option value="300">5 minutos</option><option value="600">10 minutos</option><option value="900">15 minutos</option><option value="1800">30 minutos</option></select></label>
 </div><label class="checkitem" style="margin-top:10px"><input type="checkbox" id="syncPlatform" checked> Sincronizar intervalo com a SENS Platform</label></fieldset>
 <fieldset class="config-group"><legend>CATÁLOGO — sensores de configuração rápida</legend><div class="checkgrid">
-<label class="checkitem"><input type="checkbox" id="s_dht22" checked> DHT22</label>
-<label class="checkitem"><input type="checkbox" id="s_bmp180"> BMP180</label><label class="checkitem"><input type="checkbox" id="s_bme280"> BME280</label>
-<label class="checkitem"><input type="checkbox" id="s_bme680"> BME680</label><label class="checkitem"><input type="checkbox" id="s_bmp388"> BMP388</label>
-<label class="checkitem"><input type="checkbox" id="s_bh1750"> BH1750</label><label class="checkitem"><input type="checkbox" id="s_apds"> APDS9960</label>
-<label class="checkitem"><input type="checkbox" id="s_thermok"> Termopar K</label><label class="checkitem"><input type="checkbox" id="s_gps"> GPS</label>
-<label class="checkitem"><input type="checkbox" id="s_t6613"> <b>T6613 — CO₂</b></label><span></span><span></span>
+<label class="checkitem catalog-item"><input type="checkbox" id="s_dht22" checked><span class="catalog-text"><span class="catalog-model">DHT22</span><span class="catalog-qty">Temperatura • Umidade</span></span></label>
+<label class="checkitem catalog-item"><input type="checkbox" id="s_bmp180"><span class="catalog-text"><span class="catalog-model">BMP180</span><span class="catalog-qty">Temperatura • Pressão</span></span></label>
+<label class="checkitem catalog-item"><input type="checkbox" id="s_bme280"><span class="catalog-text"><span class="catalog-model">BME280</span><span class="catalog-qty">Temperatura • Umidade • Pressão</span></span></label>
+<label class="checkitem catalog-item"><input type="checkbox" id="s_bme680"><span class="catalog-text"><span class="catalog-model">BME680</span><span class="catalog-qty">Temperatura • Umidade • Pressão • Gás</span></span></label>
+<label class="checkitem catalog-item"><input type="checkbox" id="s_bmp388"><span class="catalog-text"><span class="catalog-model">BMP388</span><span class="catalog-qty">Temperatura • Pressão</span></span></label>
+<label class="checkitem catalog-item"><input type="checkbox" id="s_bh1750"><span class="catalog-text"><span class="catalog-model">BH1750</span><span class="catalog-qty">Iluminância</span></span></label>
+<label class="checkitem catalog-item"><input type="checkbox" id="s_apds"><span class="catalog-text"><span class="catalog-model">APDS9960</span><span class="catalog-qty">Luz • Proximidade</span></span></label>
+<label class="checkitem catalog-item"><input type="checkbox" id="s_thermok"><span class="catalog-text"><span class="catalog-model">Termopar K</span><span class="catalog-qty">Temperatura</span></span></label>
+<label class="checkitem catalog-item"><input type="checkbox" id="s_gps"><span class="catalog-text"><span class="catalog-model">GPS</span><span class="catalog-qty">Posição</span></span></label>
+<label class="checkitem catalog-item"><input type="checkbox" id="s_t6613"><span class="catalog-text"><span class="catalog-model">T6613</span><span class="catalog-qty">CO₂</span></span></label>
+<label class="checkitem catalog-item"><input type="checkbox" id="s_yfs201"><span class="catalog-text"><span class="catalog-model">YF-S201</span><span class="catalog-qty">Vazão</span></span></label>
 </div><div class="config-grid" style="margin-top:12px"><label>DS18B20<select id="dsMode"><option value="0">DESATIVADO</option><option value="1">1 sensor</option><option value="2">2 sensores</option><option value="3">AUTO</option></select></label></div>
-<div class="sensorbox" style="margin-top:12px">
-  <label class="checkitem"><input type="checkbox" id="s_yfs201"> <b>YF-S201 — Vazão</b></label>
-  <div id="yf_cfg" style="display:none;margin-top:10px">
-    <div class="config-grid"><label>GPIO de pulsos<input id="yf_gpio" type="number" min="0" max="39" value="23"></label></div>
-    <input id="yf_ppu" type="hidden" value="450"><input id="yf_pwin" type="hidden" value="1000">
-    <div class="smallnote">Perfil do catálogo: 450 pulsos/L • janela 1000 ms • saída Vazão — L/min. Somente o GPIO é configurável.</div>
-  </div>
+<div id="yf_cfg" class="sensorbox" style="display:none;margin-top:12px">
+  <div class="config-grid"><label>GPIO de pulsos<input id="yf_gpio" type="number" min="0" max="39" value="23"></label></div>
+  <input id="yf_ppu" type="hidden" value="450"><input id="yf_pwin" type="hidden" value="1000">
+  <div class="smallnote">Perfil do catálogo: 450 pulsos/L • janela 1000 ms • saída Vazão — L/min. Somente o GPIO é configurável.</div>
 </div>
 <div class="smallnote">Catálogo = conveniência. Instrumentos fora do catálogo entram por INTERFACE / DRIVER ou CONVERSOR.</div></fieldset>
 
